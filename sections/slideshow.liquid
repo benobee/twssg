@@ -1,0 +1,81 @@
+{% if section.blocks.size > 0 %}
+<div id="home-slideshow" class="index-section home-section">
+  <div class="home-slideshow">
+
+  <div class="regular-slider flexslider" id="flexslider--{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="slideshow-section">
+    <ul class="slides">
+
+      {% for block in section.blocks %}
+
+          <li class="slide" id="slide-{{ block.id }}" data-flexslider-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+          {% if block.settings.image != blank %}
+            {% unless block.settings.link == blank %}
+              <a href="{{ block.settings.link }}" class="slide-link slide-link--{{ block.id }}">
+            {% endunless %}
+                <img src="{{ block.settings.image | img_url: '1024x' }}" alt="{{ block.settings.image.alt | escape }}" id="slide-{{ block.id }}" data-retina-src="{{ block.settings.image | img_url: '1024x' | scale: 2 }}" class="retina-img">
+            {% unless block.settings.link == blank %}
+              </a>
+            {% endunless %}
+          {% else %}
+            {% if block.settings.image == blank %}
+                {% capture current %}{% cycle 1, 2 %}{% endcapture %}
+                {% capture svg_tag_class %}placeholder-noblocks slide-link slide-link--{{ block.id }}{% endcapture %}
+                {%- assign placeholder = 'placeholder-lifestyle-' | append: current -%}
+                {{ 'lifestyle-' | append: current | placeholder_svg_tag: svg_tag_class }}
+                {% endif %}
+          {% endif %}
+          </li>
+
+      {% endfor %}
+
+    </ul>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% schema %}
+  {
+  	"name": "Slideshow",
+  	"max_blocks": 6,
+  	"blocks": [
+  		{
+  			"type": "image",
+  			"name": "Slide",
+  			"settings": [
+  				{
+  					"type": "image_picker",
+  					"id": "image",
+  					"label": "Image"
+  				},
+  				{
+  					"type": "url",
+  					"id": "link",
+  					"label": "Link URL"
+  				}
+  			]
+  		}
+  	],
+  	"presets": [
+  		{
+  			"name": "Slideshow",
+  			"category": "Image",
+  			"blocks": [
+
+  				{
+  					"type": "image"
+  				},
+  				{
+  					"type": "image"
+  				},
+  				{
+  					"type": "image"
+  				},
+  				{
+  					"type": "image"
+  				}
+  			]
+  		}
+  	]
+  }
+{% endschema %}

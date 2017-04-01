@@ -1,0 +1,119 @@
+<div id="home-video" class="index-section home-section">
+  <div class="home-video {% if section.settings.home_video_bg_text_color %}{{ section.settings.home_video_bg_text_color }}{% endif %}">
+
+    {% if section.settings.home-video-bg != blank %}
+
+      <style>
+        @media screen and (max-width: 768px), screen and (max-height: 768px) {
+           .prlx-bg--{{ section.id }} {
+            background-image: url("{{ section.settings.home-video-bg | img_url: '768x' }}");
+          }
+        }
+        @media screen and (min-width: 769px) and (max-width: 1024px), screen and (max-height: 769px) {
+          .prlx-bg--{{ section.id }} {
+            background-image: url("{{ section.settings.home-video-bg | img_url: '1024x' }}");
+          }
+        }
+        @media screen and (min-width: 1025px), and screen (min-height:1024px) {
+          .prlx-bg--{{ section.id }} {
+            background-image: url("{{ section.settings.home-video-bg | img_url: '2048x' }}");
+          }
+        }
+
+        // Retina Queries
+
+        @media only screen and (-webkit-min-device-pixel-ratio: 1.3) and (max-width: 600px),
+        only screen and (-o-min-device-pixel-ratio: 13/10) and (max-width: 600px),
+        only screen and (min-resolution: 120dpi) and (max-width: 600px) {
+          .prlx-bg--{{ section.id }} {
+            background-image: url("{{ section.settings.home-video-bg | img_url: '600x', scale: 2 }}");
+          }
+        }
+        @media only screen and (-webkit-min-device-pixel-ratio: 1.3) and (min-width:601px) and (max-width: 767px),
+        only screen and (-o-min-device-pixel-ratio: 13/10) and (min-width:601px) and (max-width: 767px),
+        only screen and (min-resolution: 120dpi) and (min-width:601px) and (max-width: 767px) {
+          .prlx-bg--{{ section.id }} {
+            background-image: url("{{ section.settings.home-video-bg | img_url: '767x', scale: 2 }}");
+          }
+        }
+        @media only screen and (-webkit-min-device-pixel-ratio: 1.3) and (min-width:768px),
+        only screen and (-o-min-device-pixel-ratio: 13/10) and (min-width:768px),
+        only screen and (min-resolution: 120dpi) and (min-width:768px) {
+          .prlx-bg--{{ section.id }} {
+            background-image: url("{{ section.settings.home-video-bg | img_url: '1024x', scale: 2 }}");
+          }
+        }
+
+      </style>
+
+     {% else %}
+
+      <div class="placeholder-background">
+        {% capture current %}{% cycle 1, 2 %}{% endcapture %}
+        {{ 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+      </div>
+    {% endif %}
+
+  <div class="wrapper wrapper--margins">
+
+    <div class="content push-up">
+      <div class="display-table">
+        <h2 class="display-table-cell huge-title {% if section.settings.home_video_bg_text_color %}{{ section.settings.home_video_bg_text_color }}{% endif %}">
+         {{ section.settings.home-video-text }}
+        </h2>
+      </div>
+    </div>
+
+     <a href="{% if section.settings.home-video-code.url == blank %}https://www.youtube.com/watch?v=_9VUPq3SxOc{% else %}{{ section.settings.home-video-code.url }}{% endif %}" class="video-overlay video-overlay-{{ section.id }}"><span class="video-button">{% include 'asset_svg' with 'play_arrow' %}</span></a>
+   </div>
+
+  <span class="prlx-bg prlx-bg--{{ section.id }}"></span>
+ </div>
+</div>
+
+{% schema %}
+  {
+  	"name": "Video",
+  	"settings": [
+  		{
+  			"type": "image_picker",
+  			"id": "home-video-bg",
+  			"label": "Custom video thumbnail",
+  			"info": "1920 x 840px recommended"
+  		},
+  		{
+  			"type": "select",
+  			"id": "home_video_bg_text_color",
+  			"label": "Text color",
+  			"options": [
+  				{
+  					"value": "is-dark-video",
+  					"label": "Dark"
+  				},
+  				{
+  					"value": "is-light-video",
+  					"label": "Light"
+  				}
+  			]
+  		},
+  		{
+  			"type": "text",
+  			"id": "home-video-text",
+  			"label": "Heading",
+  			"default": "Welcome!"
+  		},
+  		{
+  			"type": "video_url",
+  			"id": "home-video-code",
+  			"label": "YouTube or Vimeo link",
+  			"accept": ["youtube", "vimeo"]
+  		}
+  	],
+  	"presets": [
+    	{
+    		"name": "Video",
+    		"category": "Video"
+    	}
+    ]
+  }
+{% endschema %}

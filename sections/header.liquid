@@ -1,0 +1,187 @@
+<div data-section-id="{{ section.id }}" data-section-type="header-section">
+<header class="site-header site-header--{{ section.settings.menu_style }} {% if section.settings.menu_text_color %}{{ section.settings.menu_text_color }}{% endif %}" role="banner">
+      <div class="wrapper">
+        {% if section.settings.logo_max_width != empty and section.settings.logo != blank %}
+          {% capture image_size %}{{ section.settings.logo_max_width }}x{% endcapture %}
+        <style>
+          .site-header__logo {
+            max-width:{{ section.settings.logo_max_width }}px;
+          }
+        </style>
+        {% else %}
+          {% assign image_size = "200x" %}
+          <style>
+          .site-header__logo {
+            max-width: {{ image_size | slice: -1 }}px;
+          }
+        </style>
+        {% endif %}
+
+        {% if template.name == 'index' %}
+          <h1 class="site-header__logo {% if section.settings.logo %} display-table use-image" style="max-width:{{ image_size | slice: -1 }}px;"{% endif %} itemscope itemtype="http://schema.org/Organization">
+        {% else %}
+          <div class="h1 site-header__logo {% if section.settings.logo %} display-table use-image" style="max-width:{{ image_size | slice: -1 }}px;"{% endif %} itemscope itemtype="http://schema.org/Organization">
+        {% endif %}
+          {% if section.settings.logo %}
+            {% assign logo_inverted_url = section.settings.logo-inverted | img_url: image_size %}
+            <a href="/" itemprop="url" class="site-header__logo-link display-table-cell{% if section.settings.logo_use_inverted %} logo--has-inverted{% endif %}">
+              <img src="{{ section.settings.logo | img_url: image_size }}" alt="{{ shop.name }}" itemprop="logo">
+            </a>
+            {% if section.settings.logo_use_inverted and section.settings.logo-inverted != blank %}
+              <a href="/" itemprop="url" class="site-header__logo-link display-table-cell logo--inverted">
+                <img src="{{ section.settings.logo-inverted | img_url: image_size }}" alt="{{ shop.name }}" itemprop="logo">
+              </a>
+            {% endif %}
+          {% else %}
+            <a href="/" itemprop="url" class="site-header__logo-text">{{ shop.name }}</a>
+          {% endif %}
+        {% if template.name == 'index' %}
+          </h1>
+        {% else %}
+          </div>
+        {% endif %}
+
+        <nav class="nav-bar" role="navigation">
+          <ul class="site-nav" id="AccessibleNav">
+            {% for link in linklists[section.settings.main_linklist].links %}
+                  {%- assign child_list_handle = link.title | handleize -%}
+              {% if linklists[child_list_handle].links != blank %}
+                <li class="site-nav--has-dropdown{% if link.active %} site-nav--active{% endif %}" aria-haspopup="true">
+                  <a href="{{ link.url }}" class="site-nav__link">
+                    {{ link.title }}
+                    <span class="icon icon-arrow-down" aria-hidden="true"></span>
+                  </a>
+                  <ul class="site-nav__dropdown">
+                    <div>
+                      {% for childlink in linklists[child_list_handle].links %}
+                        <li>
+                          <a href="{{ childlink.url }}" class="site-nav__link {% if childlink.active %} site-nav--active {% endif %}">{{ childlink.title | escape }}</a>
+                        </li>
+                      {% endfor %}
+                    </div>
+                    <span class="arrow">&nbsp;</span>
+                  </ul>
+                </li>
+              {% else %}
+                <li>
+                  <a href="{{ link.url }}" class="site-nav__link {% if link.active %} site-nav--active {% endif %}">{{ link.title }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+
+            {% unless section.settings.menu_product == blank %}
+              <li class="btn__buy"><a href="{{ all_products[section.settings.menu_product].url }}" class="btn btn--outline {% if section.settings.menu_style == 'classic' %} btn--small btn--dark {% else %} btn--regular btn--light {% endif %}">{{ 'layout.navigation.buy_button' | t }} {{ all_products[section.settings.menu_product].price | money_without_trailing_zeros }}</a></li>
+            {% endunless %}
+
+            {% if cart.item_count > 0 %}
+              <li class="btn__cart">
+                <a href="/cart">
+                  <span class="icon" aria-hidden="true">{% unless cart.item_count > 99 %}{{ cart.item_count }}{% endunless %}{% include 'asset_svg' with 'cart' %}</span>
+                  <span class="text">{{ 'layout.navigation.shopping_cart' | t }}</span>
+                </a>
+              </li>
+            {% endif %}
+
+            {% if shop.customer_accounts_enabled %}
+              <li class="btn__account">
+                <a href="/account{% unless customer %}/login{% endunless %}">
+                  <span class="icon" aria-hidden="true">{% include 'asset_svg' with 'account' %}</span>
+                  <span class="text">{{ 'layout.navigation.my_account' | t }}</span>
+                </a>
+              </li>
+            {% endif %}
+
+          </ul>
+
+        </nav>
+
+        <button id="menu-opener" class="lines-button" href="#">
+          <span class="fallback-text">{{ 'layout.navigation.open_menu' | t }}</span>
+          <span class="lines" aria-hidden="true"></span>
+        </button>
+
+      </div>
+    </header>
+</div>
+
+{% schema %}
+  {
+  	"name": "Header",
+  	"settings": [
+  		{
+  			"type": "header",
+  			"content": "Logo"
+  		},
+  		{
+  			"type": "image_picker",
+  			"id": "logo",
+  			"label": "Logo image",
+  			"info": "200px wide .png recommended"
+  		},
+  		{
+  			"type": "checkbox",
+  			"id": "logo_use_inverted",
+  			"label": "Use an inverted logo"
+  		},
+  		{
+  			"type": "image_picker",
+  			"id": "logo-inverted",
+  			"label": "Inverted logo",
+  			"info": "Use this with dark slideshow images for better visibility"
+  		},
+  		{
+  			"type": "text",
+  			"id": "logo_max_width",
+  			"label": "Custom logo width (in pixels)",
+  			"default": "250",
+  			"info": "Do not add the 'px' unit"
+  		},
+  		{
+  			"type": "header",
+  			"content": "Navigation"
+  		},
+  		{
+  			"type": "link_list",
+  			"id": "main_linklist",
+  			"label": "Menu",
+  			"default": "main-menu"
+  		},
+  		{
+  			"type": "select",
+  			"id": "menu_style",
+  			"label": "Menu style",
+  			"options": [
+  				{
+  					"value": "classic",
+  					"label": "Classic"
+  				},
+  				{
+  					"value": "drawer",
+  					"label": "Drawer"
+  				}
+  			]
+  		},
+  		{
+  			"type": "select",
+  			"id": "menu_text_color",
+  			"label": "Classic menu color",
+  			"options": [
+  				{
+  					"value": "is-dark",
+  					"label": "Dark"
+  				},
+  				{
+  					"value": "is-light",
+  					"label": "Light"
+  				}
+  			],
+  			"info": "Use this when the menu is over dark sections for better visibility"
+  		},
+  		{
+  			"type": "product",
+  			"id": "menu_product",
+  			"label": "Product for \"buy now\" button"
+  		}
+  	]
+  }
+{% endschema %}

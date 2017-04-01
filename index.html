@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="/bundle.css">
+<title>ITEMS</title>
+<style type="text/css">
+	body{
+		margin:0;
+	}
+	*{
+		font-family: 'Open Sans', sans-serif !important;
+	}
+	#page{
+		max-width:1400px;
+		margin:0 auto;
+	}
+	.on-scroll.is-visible{
+		background:aquamarine !important;
+	}
+	.collection-slide{
+		display:flex;
+		flex-wrap:wrap;
+		justify-content: center;
+		transition:0.3s;
+		opacity:0;
+		transform: translateY(10px);
+	}
+	.collection-slide.active-slide{
+		opacity:1;
+		transform: translateY(0);
+	}
+	.collection-slide[data-slide-count="1"] .collection-item{
+		width:100%;
+		max-width:940px;
+	}
+	.collection-item{
+		width:100%;
+		max-width:940px;
+		box-shadow: 1.5px 3px 10px rgba(10,10,10,0.2);
+		border-radius: 4px;
+		height:90vh;
+		margin-top:5vh;
+	}
+	.collection-item .content {
+		overflow: hidden;
+	}
+	.collection-item .title{
+		font-size:2em;
+	}
+	.collection-item .title, .collection-item .tags{
+		padding:1em;
+	}
+	.collection-item .image {
+		width:auto;
+		height:100%;
+		min-height:60vh;
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center;
+	}
+</style>
+</head>
+<body class="view-list collection-type-blog">
+<main id="page">
+</main>
+<script src="/bundle.js" async></script>
+</body>
+</html>
